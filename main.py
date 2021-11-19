@@ -18,12 +18,15 @@ app.add_middleware(
 )
 
 @app.get("/paf/")
-def home():
+def home(
+    option: Optional[str] = Query(None),
+    id_editor: Optional[str] = Query(0),
+    id_employee: Optional[str] = Query(0),
+):
     bbox = sql.db_connect()
-    
-    query = f"select * from e_employee where id_employee=108294;"
-
+    query = f"call sp_createPAF_v2({option},'{id_employee}',{id_editor});"
     results = sql.plane_query_text(bbox, query)
+    print(query)
 
     sql.db_close(bbox)
     return results
