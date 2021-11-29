@@ -19,14 +19,28 @@ app.add_middleware(
 
 @app.get("/paf/")
 def home(
-    option: Optional[str] = Query(None),
+    option: Optional[str] = Query(0),
     id_editor: Optional[str] = Query(0),
     id_employee: Optional[str] = Query(0),
+    id_position: Optional[str] = Query(0),
+    paftype: Optional[str] = Query(0),
+    value: Optional[str] = Query(''),
+    post_param: Optional[str] = Query(None),
 ):
-    bbox = sql.db_connect()
-    query = f"call sp_createPAF_v2({option},'{id_employee}',{id_editor});"
-    results = sql.plane_query_text(bbox, query)
-    print(query)
+    
+    if post_param :
+        bbox = sql.db_connect()
+        query = f"call sp_createPAF_v2({option},'{post_param}',{id_editor});"
+        results = sql.plane_query_text(bbox, query)
+        print(query)
 
-    sql.db_close(bbox)
-    return results
+        sql.db_close(bbox)
+        return results
+    else :  
+        bbox = sql.db_connect()
+        query = f"call sp_createPAF_v2({option},'{id_employee}|-|{value}|-|{id_position}|-|{paftype}',{id_editor});"
+        results = sql.plane_query_text(bbox, query)
+        print(query)
+
+        sql.db_close(bbox)
+        return results
